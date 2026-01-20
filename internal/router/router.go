@@ -21,14 +21,22 @@ func Setup(db *gorm.DB) *gin.Engine {
 	// Initialize repositories
 	userRepo := repository.NewUserRepository(db)
 	projectRepo := repository.NewProjectRepository(db)
+	backlogRepo := repository.NewBacklogRepository(db)
+	historyRepo := repository.NewItemHistoryRepository(db)
+	sprintRepo := repository.NewSprintRepository(db)
+	sprintHistoryRepo := repository.NewSprintHistoryRepository(db)
 
 	// Initialize services
 	authService := service.NewAuthService(userRepo)
 	projectService := service.NewProjectService(projectRepo)
+	backlogService := service.NewBacklogService(backlogRepo, historyRepo)
+	sprintService := service.NewSprintService(sprintRepo, sprintHistoryRepo, backlogRepo, historyRepo)
 
 	// Initialize handlers
 	authHandler := handler.NewAuthHandler(authService)
 	projectHandler := handler.NewProjectHandler(projectService)
+	backlogHandler := handler.NewBacklogHandler(backlogService)
+	sprintHandler := handler.NewSprintHandler(sprintService)
 
 	// Health check
 	r.GET("/health", func(c *gin.Context) {
@@ -84,83 +92,34 @@ func Setup(db *gorm.DB) *gin.Engine {
 			// Backlog
 			backlog := protected.Group("/backlog")
 			{
-				backlog.GET("", func(c *gin.Context) {
-					c.JSON(501, gin.H{"message": "Not implemented yet"})
-				})
-				backlog.POST("", func(c *gin.Context) {
-					c.JSON(501, gin.H{"message": "Not implemented yet"})
-				})
-				backlog.GET("/:id", func(c *gin.Context) {
-					c.JSON(501, gin.H{"message": "Not implemented yet"})
-				})
-				backlog.PUT("/:id", func(c *gin.Context) {
-					c.JSON(501, gin.H{"message": "Not implemented yet"})
-				})
-				backlog.DELETE("/:id", func(c *gin.Context) {
-					c.JSON(501, gin.H{"message": "Not implemented yet"})
-				})
-				backlog.PATCH("/:id/status", func(c *gin.Context) {
-					c.JSON(501, gin.H{"message": "Not implemented yet"})
-				})
-				backlog.PATCH("/:id/priority", func(c *gin.Context) {
-					c.JSON(501, gin.H{"message": "Not implemented yet"})
-				})
-				backlog.POST("/:id/comments", func(c *gin.Context) {
-					c.JSON(501, gin.H{"message": "Not implemented yet"})
-				})
-				backlog.POST("/:id/labels", func(c *gin.Context) {
-					c.JSON(501, gin.H{"message": "Not implemented yet"})
-				})
-				backlog.DELETE("/:id/labels/:label", func(c *gin.Context) {
-					c.JSON(501, gin.H{"message": "Not implemented yet"})
-				})
-				backlog.GET("/:id/history", func(c *gin.Context) {
-					c.JSON(501, gin.H{"message": "Not implemented yet"})
-				})
+				backlog.GET("", backlogHandler.GetAll)
+				backlog.POST("", backlogHandler.Create)
+				backlog.GET("/:id", backlogHandler.GetByID)
+				backlog.PUT("/:id", backlogHandler.Update)
+				backlog.DELETE("/:id", backlogHandler.Delete)
+				backlog.PATCH("/:id/status", backlogHandler.UpdateStatus)
+				backlog.PATCH("/:id/priority", backlogHandler.UpdatePriority)
+				backlog.POST("/:id/comments", backlogHandler.AddComment)
+				backlog.POST("/:id/labels", backlogHandler.AddLabel)
+				backlog.DELETE("/:id/labels/:label", backlogHandler.RemoveLabel)
+				backlog.GET("/:id/history", backlogHandler.GetHistory)
 			}
 
 			// Sprints
 			sprints := protected.Group("/sprints")
 			{
-				sprints.GET("", func(c *gin.Context) {
-					c.JSON(501, gin.H{"message": "Not implemented yet"})
-				})
-				sprints.POST("", func(c *gin.Context) {
-					c.JSON(501, gin.H{"message": "Not implemented yet"})
-				})
-				sprints.GET("/:id", func(c *gin.Context) {
-					c.JSON(501, gin.H{"message": "Not implemented yet"})
-				})
-				sprints.PUT("/:id", func(c *gin.Context) {
-					c.JSON(501, gin.H{"message": "Not implemented yet"})
-				})
-				sprints.DELETE("/:id", func(c *gin.Context) {
-					c.JSON(501, gin.H{"message": "Not implemented yet"})
-				})
-				sprints.POST("/:id/start", func(c *gin.Context) {
-					c.JSON(501, gin.H{"message": "Not implemented yet"})
-				})
-				sprints.POST("/:id/complete", func(c *gin.Context) {
-					c.JSON(501, gin.H{"message": "Not implemented yet"})
-				})
-				sprints.POST("/:id/cancel", func(c *gin.Context) {
-					c.JSON(501, gin.H{"message": "Not implemented yet"})
-				})
-				sprints.POST("/:id/items", func(c *gin.Context) {
-					c.JSON(501, gin.H{"message": "Not implemented yet"})
-				})
-				sprints.DELETE("/:id/items/:itemId", func(c *gin.Context) {
-					c.JSON(501, gin.H{"message": "Not implemented yet"})
-				})
-				sprints.GET("/history", func(c *gin.Context) {
-					c.JSON(501, gin.H{"message": "Not implemented yet"})
-				})
-				sprints.GET("/:id/history", func(c *gin.Context) {
-					c.JSON(501, gin.H{"message": "Not implemented yet"})
-				})
-				sprints.GET("/:id/history/report", func(c *gin.Context) {
-					c.JSON(501, gin.H{"message": "Not implemented yet"})
-				})
+				sprints.GET("", sprintHandler.GetAll)
+				sprints.POST("", sprintHandler.Create)
+				sprints.GET("/:id", sprintHandler.GetByID)
+				sprints.PUT("/:id", sprintHandler.Update)
+				sprints.DELETE("/:id", sprintHandler.Delete)
+				sprints.POST("/:id/start", sprintHandler.Start)
+				sprints.POST("/:id/complete", sprintHandler.Complete)
+				sprints.POST("/:id/cancel", sprintHandler.Cancel)
+				sprints.POST("/:id/items", sprintHandler.AddItem)
+				sprints.DELETE("/:id/items/:itemId", sprintHandler.RemoveItem)
+				sprints.GET("/:id/history", sprintHandler.GetHistory)
+				sprints.GET("/:id/report", sprintHandler.GetReport)
 			}
 
 			// Board
