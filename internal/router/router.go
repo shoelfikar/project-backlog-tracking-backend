@@ -31,12 +31,14 @@ func Setup(db *gorm.DB) *gin.Engine {
 	projectService := service.NewProjectService(projectRepo)
 	backlogService := service.NewBacklogService(backlogRepo, historyRepo)
 	sprintService := service.NewSprintService(sprintRepo, sprintHistoryRepo, backlogRepo, historyRepo)
+	userService := service.NewUserService(userRepo, historyRepo, sprintHistoryRepo)
 
 	// Initialize handlers
 	authHandler := handler.NewAuthHandler(authService)
 	projectHandler := handler.NewProjectHandler(projectService)
 	backlogHandler := handler.NewBacklogHandler(backlogService)
 	sprintHandler := handler.NewSprintHandler(sprintService)
+	userHandler := handler.NewUserHandler(userService)
 
 	// Health check
 	r.GET("/health", func(c *gin.Context) {
@@ -65,18 +67,10 @@ func Setup(db *gorm.DB) *gin.Engine {
 			// Users
 			users := protected.Group("/users")
 			{
-				users.GET("", func(c *gin.Context) {
-					c.JSON(501, gin.H{"message": "Not implemented yet"})
-				})
-				users.GET("/:id", func(c *gin.Context) {
-					c.JSON(501, gin.H{"message": "Not implemented yet"})
-				})
-				users.GET("/:id/activities", func(c *gin.Context) {
-					c.JSON(501, gin.H{"message": "Not implemented yet"})
-				})
-				users.PUT("/profile", func(c *gin.Context) {
-					c.JSON(501, gin.H{"message": "Not implemented yet"})
-				})
+				users.GET("", userHandler.GetAll)
+				users.GET("/:id", userHandler.GetByID)
+				users.GET("/:id/activities", userHandler.GetActivities)
+				users.PUT("/profile", userHandler.UpdateProfile)
 			}
 
 			// Projects

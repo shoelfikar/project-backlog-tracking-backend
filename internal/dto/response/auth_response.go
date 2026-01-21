@@ -34,3 +34,12 @@ func ToUserResponse(user *models.User) *UserResponse {
 		AvatarURL: user.AvatarURL,
 	}
 }
+
+// ToUserListResponse converts a slice of User models to UserResponse slice
+func ToUserListResponse(users []models.User) []UserResponse {
+	responses := make([]UserResponse, len(users))
+	for i, u := range users {
+		responses[i] = *ToUserResponse(&u)
+	}
+	return responses
+}
