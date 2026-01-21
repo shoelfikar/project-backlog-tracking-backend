@@ -1,0 +1,1994 @@
+basePath: /api
+definitions:
+  constants.ItemAction:
+    enum:
+    - Created
+    - Updated
+    - StatusChanged
+    - PriorityChanged
+    - SprintAssigned
+    - SprintRemoved
+    - CommentAdded
+    - LabelAdded
+    - LabelRemoved
+    - DescriptionUpdated
+    type: string
+    x-enum-varnames:
+    - ItemActionCreated
+    - ItemActionUpdated
+    - ItemActionStatusChanged
+    - ItemActionPriorityChanged
+    - ItemActionSprintAssigned
+    - ItemActionSprintRemoved
+    - ItemActionCommentAdded
+    - ItemActionLabelAdded
+    - ItemActionLabelRemoved
+    - ItemActionDescriptionUpdated
+  constants.ItemStatus:
+    enum:
+    - New
+    - Ready
+    - In Progress
+    - Done
+    - Archived
+    type: string
+    x-enum-varnames:
+    - ItemStatusNew
+    - ItemStatusReady
+    - ItemStatusInProgress
+    - ItemStatusDone
+    - ItemStatusArchived
+  constants.ItemType:
+    enum:
+    - Story
+    - Bug
+    - Task
+    - Epic
+    type: string
+    x-enum-varnames:
+    - ItemTypeStory
+    - ItemTypeBug
+    - ItemTypeTask
+    - ItemTypeEpic
+  constants.Priority:
+    enum:
+    - Critical
+    - High
+    - Medium
+    - Low
+    type: string
+    x-enum-varnames:
+    - PriorityCritical
+    - PriorityHigh
+    - PriorityMedium
+    - PriorityLow
+  constants.SprintAction:
+    enum:
+    - Created
+    - Started
+    - ItemAdded
+    - ItemRemoved
+    - ItemMoved
+    - Completed
+    - Cancelled
+    type: string
+    x-enum-varnames:
+    - SprintActionCreated
+    - SprintActionStarted
+    - SprintActionItemAdded
+    - SprintActionItemRemoved
+    - SprintActionItemMoved
+    - SprintActionCompleted
+    - SprintActionCancelled
+  constants.SprintStatus:
+    enum:
+    - Planning
+    - Active
+    - Completed
+    - Cancelled
+    type: string
+    x-enum-varnames:
+    - SprintStatusPlanning
+    - SprintStatusActive
+    - SprintStatusCompleted
+    - SprintStatusCancelled
+  request.AddCommentRequest:
+    properties:
+      content:
+        maxLength: 2000
+        minLength: 1
+        type: string
+    required:
+    - content
+    type: object
+  request.AddItemToSprintRequest:
+    properties:
+      item_id:
+        type: string
+    required:
+    - item_id
+    type: object
+  request.AddLabelRequest:
+    properties:
+      label:
+        maxLength: 50
+        minLength: 1
+        type: string
+    required:
+    - label
+    type: object
+  request.CreateBacklogItemRequest:
+    properties:
+      description:
+        maxLength: 5000
+        type: string
+      labels:
+        items:
+          type: string
+        type: array
+      priority:
+        $ref: '#/definitions/constants.Priority'
+      project_id:
+        type: string
+      sprint_id:
+        type: string
+      status:
+        $ref: '#/definitions/constants.ItemStatus'
+      story_points:
+        maximum: 100
+        minimum: 0
+        type: integer
+      title:
+        maxLength: 200
+        minLength: 1
+        type: string
+      type:
+        $ref: '#/definitions/constants.ItemType'
+    required:
+    - priority
+    - project_id
+    - title
+    - type
+    type: object
+  request.CreateProjectRequest:
+    properties:
+      description:
+        maxLength: 500
+        type: string
+      key:
+        maxLength: 10
+        minLength: 2
+        type: string
+      name:
+        maxLength: 100
+        minLength: 1
+        type: string
+    required:
+    - key
+    - name
+    type: object
+  request.CreateSprintRequest:
+    properties:
+      end_date:
+        type: string
+      goal:
+        maxLength: 500
+        type: string
+      name:
+        maxLength: 100
+        minLength: 1
+        type: string
+      project_id:
+        type: string
+      start_date:
+        type: string
+    required:
+    - end_date
+    - name
+    - project_id
+    - start_date
+    type: object
+  request.GoogleVerifyRequest:
+    properties:
+      code:
+        type: string
+      redirect_uri:
+        type: string
+    required:
+    - code
+    - redirect_uri
+    type: object
+  request.UpdateBacklogItemRequest:
+    properties:
+      description:
+        maxLength: 5000
+        type: string
+      labels:
+        items:
+          type: string
+        type: array
+      priority:
+        $ref: '#/definitions/constants.Priority'
+      sprint_id:
+        type: string
+      status:
+        $ref: '#/definitions/constants.ItemStatus'
+      story_points:
+        maximum: 100
+        minimum: 0
+        type: integer
+      title:
+        maxLength: 200
+        minLength: 1
+        type: string
+      type:
+        $ref: '#/definitions/constants.ItemType'
+    type: object
+  request.UpdatePriorityRequest:
+    properties:
+      priority:
+        $ref: '#/definitions/constants.Priority'
+    required:
+    - priority
+    type: object
+  request.UpdateProfileRequest:
+    properties:
+      avatar_url:
+        type: string
+      name:
+        maxLength: 100
+        minLength: 2
+        type: string
+    type: object
+  request.UpdateProjectRequest:
+    properties:
+      description:
+        maxLength: 500
+        type: string
+      name:
+        maxLength: 100
+        minLength: 1
+        type: string
+    type: object
+  request.UpdateSprintRequest:
+    properties:
+      end_date:
+        type: string
+      goal:
+        maxLength: 500
+        type: string
+      name:
+        maxLength: 100
+        minLength: 1
+        type: string
+      start_date:
+        type: string
+    type: object
+  request.UpdateStatusRequest:
+    properties:
+      status:
+        $ref: '#/definitions/constants.ItemStatus'
+    required:
+    - status
+    type: object
+  response.AuthResponse:
+    properties:
+      expires_in:
+        type: integer
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/response.UserResponse'
+    type: object
+  response.BacklogItemResponse:
+    properties:
+      created_at:
+        type: string
+      created_by:
+        $ref: '#/definitions/response.UserResponse'
+      description:
+        type: string
+      id:
+        type: string
+      labels:
+        items:
+          type: string
+        type: array
+      position:
+        type: integer
+      priority:
+        $ref: '#/definitions/constants.Priority'
+      project_id:
+        type: string
+      sprint:
+        $ref: '#/definitions/response.SprintSummary'
+      sprint_id:
+        type: string
+      status:
+        $ref: '#/definitions/constants.ItemStatus'
+      story_points:
+        type: integer
+      title:
+        type: string
+      type:
+        $ref: '#/definitions/constants.ItemType'
+      updated_at:
+        type: string
+    type: object
+  response.BacklogItemSummary:
+    properties:
+      id:
+        type: string
+      title:
+        type: string
+      type:
+        type: string
+    type: object
+  response.BacklogListResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/response.BacklogItemResponse'
+        type: array
+      limit:
+        type: integer
+      page:
+        type: integer
+      total:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
+  response.ErrorDetail:
+    properties:
+      code:
+        type: string
+      details:
+        type: string
+    type: object
+  response.ErrorResponse:
+    properties:
+      error:
+        $ref: '#/definitions/response.ErrorDetail'
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  response.ItemHistoryResponse:
+    properties:
+      action:
+        $ref: '#/definitions/constants.ItemAction'
+      comment:
+        type: string
+      field_changed:
+        type: string
+      id:
+        type: string
+      item_id:
+        type: string
+      new_value: {}
+      old_value: {}
+      timestamp:
+        type: string
+      user:
+        $ref: '#/definitions/response.UserResponse'
+      user_id:
+        type: string
+    type: object
+  response.ProjectListResponse:
+    properties:
+      limit:
+        type: integer
+      page:
+        type: integer
+      projects:
+        items:
+          $ref: '#/definitions/response.ProjectResponse'
+        type: array
+      total:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
+  response.ProjectResponse:
+    properties:
+      created_at:
+        type: string
+      created_by:
+        $ref: '#/definitions/response.UserResponse'
+      description:
+        type: string
+      id:
+        type: string
+      key:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  response.ProjectSummary:
+    properties:
+      id:
+        type: string
+      key:
+        type: string
+      name:
+        type: string
+    type: object
+  response.SprintHistoryResponse:
+    properties:
+      action:
+        $ref: '#/definitions/constants.SprintAction'
+      id:
+        type: string
+      item:
+        $ref: '#/definitions/response.BacklogItemSummary'
+      item_id:
+        type: string
+      new_value: {}
+      old_value: {}
+      sprint_id:
+        type: string
+      timestamp:
+        type: string
+      user:
+        $ref: '#/definitions/response.UserResponse'
+      user_id:
+        type: string
+    type: object
+  response.SprintListResponse:
+    properties:
+      limit:
+        type: integer
+      page:
+        type: integer
+      sprints:
+        items:
+          $ref: '#/definitions/response.SprintResponse'
+        type: array
+      total:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
+  response.SprintReportResponse:
+    properties:
+      completed_items:
+        type: integer
+      completed_story_points:
+        type: integer
+      completion_percentage:
+        type: number
+      sprint:
+        $ref: '#/definitions/response.SprintResponse'
+      total_items:
+        type: integer
+      total_story_points:
+        type: integer
+      velocity:
+        type: integer
+    type: object
+  response.SprintResponse:
+    properties:
+      created_at:
+        type: string
+      created_by:
+        $ref: '#/definitions/response.UserResponse'
+      end_date:
+        type: string
+      goal:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      project:
+        $ref: '#/definitions/response.ProjectSummary'
+      project_id:
+        type: string
+      start_date:
+        type: string
+      status:
+        $ref: '#/definitions/constants.SprintStatus'
+      updated_at:
+        type: string
+      velocity:
+        type: integer
+    type: object
+  response.SprintSummary:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  response.SprintSummaryFull:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  response.SprintWithItemsResponse:
+    properties:
+      created_at:
+        type: string
+      created_by:
+        $ref: '#/definitions/response.UserResponse'
+      end_date:
+        type: string
+      goal:
+        type: string
+      id:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/response.BacklogItemResponse'
+        type: array
+      name:
+        type: string
+      project:
+        $ref: '#/definitions/response.ProjectSummary'
+      project_id:
+        type: string
+      start_date:
+        type: string
+      status:
+        $ref: '#/definitions/constants.SprintStatus'
+      total_items:
+        type: integer
+      total_points:
+        type: integer
+      updated_at:
+        type: string
+      velocity:
+        type: integer
+    type: object
+  response.SuccessResponse:
+    properties:
+      data: {}
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  response.UserActivitiesResponse:
+    properties:
+      activities:
+        items:
+          $ref: '#/definitions/response.UserActivityResponse'
+        type: array
+      limit:
+        type: integer
+      total:
+        type: integer
+    type: object
+  response.UserActivityResponse:
+    properties:
+      action:
+        type: string
+      comment:
+        type: string
+      field_changed:
+        type: string
+      id:
+        type: string
+      item:
+        $ref: '#/definitions/response.BacklogItemSummary'
+      new_value: {}
+      old_value: {}
+      sprint:
+        $ref: '#/definitions/response.SprintSummaryFull'
+      timestamp:
+        type: string
+      type:
+        description: '"item" or "sprint"'
+        type: string
+    type: object
+  response.UserResponse:
+    properties:
+      avatar_url:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  utils.ErrorDetail:
+    properties:
+      code:
+        type: string
+      details:
+        type: string
+    type: object
+  utils.ErrorResponse:
+    properties:
+      error:
+        $ref: '#/definitions/utils.ErrorDetail'
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  utils.SuccessResponse:
+    properties:
+      data: {}
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@sprintbacklog.com
+    name: API Support
+  description: API for Sprint Backlog - A project management tool for agile teams
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: Sprint Backlog API
+  version: "1.0"
+paths:
+  /auth/google/verify:
+    post:
+      consumes:
+      - application/json
+      description: Verify Google OAuth authorization code and return JWT token
+      parameters:
+      - description: Google verify request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.GoogleVerifyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.AuthResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Verify Google OAuth code
+      tags:
+      - auth
+  /auth/me:
+    get:
+      description: Get the currently authenticated user's information
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.UserResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get current user
+      tags:
+      - auth
+  /backlog:
+    get:
+      description: Get all backlog items with optional filters and pagination
+      parameters:
+      - description: Search in title and description
+        in: query
+        name: search
+        type: string
+      - collectionFormat: csv
+        description: Filter by type (Story, Task, Bug, Epic)
+        in: query
+        items:
+          type: string
+        name: type
+        type: array
+      - collectionFormat: csv
+        description: Filter by priority (Critical, High, Medium, Low)
+        in: query
+        items:
+          type: string
+        name: priority
+        type: array
+      - collectionFormat: csv
+        description: Filter by status (New, Ready, In Progress, In Review, Done)
+        in: query
+        items:
+          type: string
+        name: status
+        type: array
+      - description: Filter by sprint ID or 'none' for unassigned
+        in: query
+        name: sprint_id
+        type: string
+      - collectionFormat: csv
+        description: Filter by labels
+        in: query
+        items:
+          type: string
+        name: labels
+        type: array
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Items per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.BacklogListResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get all backlog items
+      tags:
+      - backlog
+    post:
+      consumes:
+      - application/json
+      description: Create a new backlog item
+      parameters:
+      - description: Create backlog item request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateBacklogItemRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.BacklogItemResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create a new backlog item
+      tags:
+      - backlog
+  /backlog/{id}:
+    delete:
+      description: Delete a backlog item by its ID
+      parameters:
+      - description: Backlog Item ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete a backlog item
+      tags:
+      - backlog
+    get:
+      description: Get a backlog item by its ID
+      parameters:
+      - description: Backlog Item ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.BacklogItemResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get backlog item by ID
+      tags:
+      - backlog
+    put:
+      consumes:
+      - application/json
+      description: Update an existing backlog item
+      parameters:
+      - description: Backlog Item ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update backlog item request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateBacklogItemRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.BacklogItemResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update a backlog item
+      tags:
+      - backlog
+  /backlog/{id}/comments:
+    post:
+      consumes:
+      - application/json
+      description: Add a comment to a backlog item
+      parameters:
+      - description: Backlog Item ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Add comment request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.AddCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.ItemHistoryResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Add a comment to backlog item
+      tags:
+      - backlog
+  /backlog/{id}/history:
+    get:
+      description: Get the history of a backlog item
+      parameters:
+      - description: Backlog Item ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/response.ItemHistoryResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get backlog item history
+      tags:
+      - backlog
+  /backlog/{id}/labels:
+    post:
+      consumes:
+      - application/json
+      description: Add a label to a backlog item
+      parameters:
+      - description: Backlog Item ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Add label request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.AddLabelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.BacklogItemResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Add a label to backlog item
+      tags:
+      - backlog
+  /backlog/{id}/labels/{label}:
+    delete:
+      description: Remove a label from a backlog item
+      parameters:
+      - description: Backlog Item ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Label to remove
+        in: path
+        name: label
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.BacklogItemResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Remove a label from backlog item
+      tags:
+      - backlog
+  /backlog/{id}/priority:
+    patch:
+      consumes:
+      - application/json
+      description: Update the priority of a backlog item
+      parameters:
+      - description: Backlog Item ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update priority request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdatePriorityRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.BacklogItemResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update backlog item priority
+      tags:
+      - backlog
+  /backlog/{id}/status:
+    patch:
+      consumes:
+      - application/json
+      description: Update the status of a backlog item
+      parameters:
+      - description: Backlog Item ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update status request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateStatusRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.BacklogItemResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update backlog item status
+      tags:
+      - backlog
+  /projects:
+    get:
+      description: Get all projects with optional pagination
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Items per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ProjectListResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get all projects
+      tags:
+      - projects
+    post:
+      consumes:
+      - application/json
+      description: Create a new project
+      parameters:
+      - description: Create project request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateProjectRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.ProjectResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create a new project
+      tags:
+      - projects
+  /projects/{id}:
+    delete:
+      description: Delete a project by its ID
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete a project
+      tags:
+      - projects
+    get:
+      description: Get a project by its ID
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ProjectResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get project by ID
+      tags:
+      - projects
+    put:
+      consumes:
+      - application/json
+      description: Update an existing project
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update project request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateProjectRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ProjectResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update a project
+      tags:
+      - projects
+  /sprints:
+    get:
+      description: Get all sprints with optional filters and pagination
+      parameters:
+      - description: Filter by project ID
+        in: query
+        name: project_id
+        type: string
+      - collectionFormat: csv
+        description: Filter by status (Planning, Active, Completed, Cancelled)
+        in: query
+        items:
+          type: string
+        name: status
+        type: array
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Items per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SprintListResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get all sprints
+      tags:
+      - sprints
+    post:
+      consumes:
+      - application/json
+      description: Create a new sprint
+      parameters:
+      - description: Create sprint request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateSprintRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.SprintResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create a new sprint
+      tags:
+      - sprints
+  /sprints/{id}:
+    delete:
+      description: Delete a sprint by its ID
+      parameters:
+      - description: Sprint ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete a sprint
+      tags:
+      - sprints
+    get:
+      description: Get a sprint by its ID
+      parameters:
+      - description: Sprint ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SprintResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get sprint by ID
+      tags:
+      - sprints
+    put:
+      consumes:
+      - application/json
+      description: Update an existing sprint
+      parameters:
+      - description: Sprint ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update sprint request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateSprintRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SprintResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update a sprint
+      tags:
+      - sprints
+  /sprints/{id}/cancel:
+    post:
+      description: Cancel a sprint (change status to Cancelled)
+      parameters:
+      - description: Sprint ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SprintResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Cancel a sprint
+      tags:
+      - sprints
+  /sprints/{id}/complete:
+    post:
+      description: Complete a sprint (change status from Active to Completed and calculate
+        velocity)
+      parameters:
+      - description: Sprint ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SprintResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Complete a sprint
+      tags:
+      - sprints
+  /sprints/{id}/history:
+    get:
+      description: Get the history of a sprint
+      parameters:
+      - description: Sprint ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/response.SprintHistoryResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get sprint history
+      tags:
+      - sprints
+  /sprints/{id}/history/report:
+    get:
+      description: Get the report of a sprint including velocity and completion stats
+      parameters:
+      - description: Sprint ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SprintReportResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get sprint report
+      tags:
+      - sprints
+  /sprints/{id}/items:
+    post:
+      consumes:
+      - application/json
+      description: Add a backlog item to a sprint
+      parameters:
+      - description: Sprint ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Add item request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.AddItemToSprintRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SprintWithItemsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Add an item to sprint
+      tags:
+      - sprints
+  /sprints/{id}/items/{itemId}:
+    delete:
+      description: Remove a backlog item from a sprint
+      parameters:
+      - description: Sprint ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Item ID
+        in: path
+        name: itemId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SprintWithItemsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Remove an item from sprint
+      tags:
+      - sprints
+  /sprints/{id}/start:
+    post:
+      description: Start a sprint (change status from Planning to Active)
+      parameters:
+      - description: Sprint ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SprintResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Start a sprint
+      tags:
+      - sprints
+  /users:
+    get:
+      description: Get all registered users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.SuccessResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/response.UserResponse'
+                  type: array
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get all users
+      tags:
+      - users
+  /users/{id}:
+    get:
+      description: Get a user by their ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.UserResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get user by ID
+      tags:
+      - users
+  /users/{id}/activities:
+    get:
+      description: Get a user's activity history (item and sprint actions)
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - default: 50
+        description: Maximum number of activities to return
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.UserActivitiesResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get user activities
+      tags:
+      - users
+  /users/profile:
+    put:
+      consumes:
+      - application/json
+      description: Update the current user's profile information
+      parameters:
+      - description: Update profile request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateProfileRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.UserResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "501":
+          description: Not Implemented
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update user profile
+      tags:
+      - users
+securityDefinitions:
+  BearerAuth:
+    description: 'JWT Authorization header using Bearer scheme. Example: "Bearer {token}"'
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

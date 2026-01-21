@@ -8,7 +8,28 @@ import (
 	"sprint-backlog/internal/config"
 	"sprint-backlog/internal/database"
 	"sprint-backlog/internal/router"
+
+	_ "sprint-backlog/docs" // Swagger docs
 )
+
+// @title Sprint Backlog API
+// @version 1.0
+// @description API for Sprint Backlog - A project management tool for agile teams
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name API Support
+// @contact.email support@sprintbacklog.com
+
+// @license.name MIT
+// @license.url https://opensource.org/licenses/MIT
+
+// @host localhost:8080
+// @BasePath /api
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description JWT Authorization header using Bearer scheme. Example: "Bearer {token}"
 
 func main() {
 	// Load configuration
