@@ -1,0 +1,39 @@
+# Git
+.git
+.gitignore
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# Build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# Test coverage
+coverage.txt
+coverage.html
+
+# Temporary files
+tmp/
+temp/
+
+# Documentation (we include docs folder for swagger)
+*.md
+!README.md
+
+# OS files
+.DS_Store
+Thumbs.db
